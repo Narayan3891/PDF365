@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word to PDF - PDFy365</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #1f2937; /* Dark Theme */
+      color: white;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body class="p-4">
+  <div class="max-w-xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4 text-center">Word to PDF Converter</h1><!-- File Upload -->
+<div class="mb-4 border border-dashed border-gray-500 p-6 rounded-lg text-center">
+  <input type="file" id="fileInput" accept=".doc,.docx,.rtf,.odt" class="mb-2" />
+  <p class="text-sm">Supported formats: .doc, .docx, .rtf, .odt</p>
+</div>
+
+<!-- Format Selection -->
+<div class="mb-4">
+  <label for="outputFormat" class="block mb-1">Select Output Format:</label>
+  <select id="outputFormat" class="w-full text-black rounded px-2 py-1">
+    <option value="pdf">PDF</option>
+  </select>
+</div>
+
+<!-- Convert Button -->
+<button onclick="convertFile()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full mb-4">Convert</button>
+
+<!-- Processing Status -->
+<div id="processing" class="hidden text-center text-yellow-400 mb-4">Processing file...</div>
+
+<!-- Preview -->
+<div id="preview" class="hidden mb-4">
+  <h2 class="text-lg mb-2">Preview:</h2>
+  <iframe id="pdfPreview" class="w-full h-64 border rounded"></iframe>
+</div>
+
+<!-- Download Button -->
+<a id="downloadLink" href="#" download="converted.pdf" class="hidden bg-green-600 hover:bg-green-700 px-4 py-2 rounded w-full text-center block">Download PDF</a>
+
+  </div>  <script>
+    function convertFile() {
+      const fileInput = document.getElementById('fileInput');
+      const outputFormat = document.getElementById('outputFormat').value;
+      const processing = document.getElementById('processing');
+      const preview = document.getElementById('preview');
+      const downloadLink = document.getElementById('downloadLink');
+      const pdfPreview = document.getElementById('pdfPreview');
+
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please upload a file.');
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/rtf', 'application/vnd.oasis.opendocument.text'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Unsupported file type.');
+        return;
+      }
+
+      processing.classList.remove('hidden');
+      preview.classList.add('hidden');
+      downloadLink.classList.add('hidden');
+
+      // Simulate conversion delay and fake preview
+      setTimeout(() => {
+        const blob = new Blob(['%PDF-1.4\nFake PDF content for preview'], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        pdfPreview.src = url;
+        downloadLink.href = url;
+
+        processing.classList.add('hidden');
+        preview.classList.remove('hidden');
+        downloadLink.classList.remove('hidden');
+      }, 2000);
+    }
+  </script></body>
+</html>
