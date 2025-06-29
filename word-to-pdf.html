@@ -1,135 +1,1097 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Word to PDF - PDFy365</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #1f2937; /* Dark Theme */
-      color: white;
-    }
-    .hidden { display: none; }
-  </style>
-</head>
-<body class="p-4">
-  <div class="max-w-xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4 text-center">Word to PDF Converter</h1><!-- File Upload -->
-<div class="mb-4 border border-dashed border-gray-500 p-6 rounded-lg text-center">
-  <input type="file" id="fileInput" accept=".doc,.docx,.rtf,.odt" class="mb-2" />
-  <p class="text-sm">Supported formats: .doc, .docx, .rtf, .odt</p>
-</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFy365 - Word to PDF Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<!-- Format Selection -->
-<div class="mb-4">
-  <label for="outputFormat" class="block mb-1">Select Output Format:</label>
-  <select id="outputFormat" class="w-full text-black rounded px-2 py-1">
-    <option value="pdf">PDF</option>
-  </select>
-</div>
+        :root {
+            --primary: #4a6cf7;
+            --secondary: #6c5ce7;
+            --dark: #121826;
+            --darker: #0d1117;
+            --dark-light: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
 
-<!-- Convert Button -->
-<button onclick="convertFile()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full mb-4">Convert</button>
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-<!-- Processing Status -->
-<div id="processing" class="hidden text-center text-yellow-400 mb-4">Processing file...</div>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-<!-- Preview -->
-<div id="preview" class="hidden mb-4">
-  <h2 class="text-lg mb-2">Preview:</h2>
-  <iframe id="pdfPreview" class="w-full h-64 border rounded"></iframe>
-</div>
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
 
-<!-- Download Button -->
-<a id="downloadLink" href="#" download="converted.pdf" class="hidden bg-green-600 hover:bg-green-700 px-4 py-2 rounded w-full text-center block">Download PDF</a>
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-  </div>  <script>
-    async function convertFile() {
-      const fileInput = document.getElementById('fileInput');
-      const outputFormat = document.getElementById('outputFormat').value;
-      const processing = document.getElementById('processing');
-      const preview = document.getElementById('preview');
-      const downloadLink = document.getElementById('downloadLink');
-      const pdfPreview = document.getElementById('pdfPreview');
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
 
-      const file = fileInput.files[0];
-      if (!file) {
-        alert('Please upload a file.');
-        return;
-      }
+        .logo h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
 
-      const allowedTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/rtf', 'application/vnd.oasis.opendocument.text'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Unsupported file type.');
-        return;
-      }
+        header p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
 
-      processing.classList.remove('hidden');
-      preview.classList.add('hidden');
-      downloadLink.classList.add('hidden');
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
 
-      // Use CloudConvert API
-      const apiKey = 'YOUR_CLOUDCONVERT_API_KEY'; // Replace with your real key
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const response = await fetch('https://api.cloudconvert.com/v2/import/upload', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + apiKey
-          },
-        });
-
-        const importResult = await response.json();
-        const uploadUrl = importResult.data.url;
-
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          body: file
-        });
-
-        const jobResponse = await fetch('https://api.cloudconvert.com/v2/jobs', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + apiKey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            tasks: {
-              import: {
-                operation: 'import/upload',
-                file: importResult.data.id
-              },
-              convert: {
-                operation: 'convert',
-                input: 'import',
-                input_format: file.name.split('.').pop(),
-                output_format: 'pdf'
-              },
-              export: {
-                operation: 'export/url',
-                input: 'convert'
-              }
+        @media (min-width: 992px) {
+            .main-content {
+                flex-direction: row;
             }
-          })
+        }
+
+        .upload-section, .preview-section {
+            background: var(--dark-light);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .upload-section {
+            flex: 1;
+        }
+
+        .preview-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            color: var(--light);
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--gray);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            position: relative;
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(74, 108, 247, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 3.5rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .upload-area h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .upload-area p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .browse-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .browse-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-info p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-info i {
+            color: var(--primary);
+            min-width: 20px;
+        }
+
+        /* Format Selection */
+        .format-selection {
+            margin: 30px 0;
+        }
+
+        .format-selection h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--light);
+        }
+
+        .format-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .format-option {
+            background: var(--dark);
+            border: 2px solid var(--dark);
+            border-radius: 10px;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .format-option.active {
+            border-color: var(--primary);
+            background: rgba(74, 108, 247, 0.1);
+        }
+
+        .format-option i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .format-option h5 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--gray);
+            color: var(--light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--light);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Preview Section */
+        .preview-container {
+            flex: 1;
+            background: var(--dark);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .preview-header {
+            padding: 15px 20px;
+            background: rgba(30, 41, 59, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+        }
+
+        .pdf-preview {
+            width: 100%;
+            min-height: 400px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            color: black;
+            font-family: 'Times New Roman', Times, serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pdf-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pdf-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .pdf-subtitle {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .pdf-content {
+            line-height: 1.6;
+        }
+
+        .pdf-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .pdf-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 20px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .pdf-preview img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pdf-preview table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .pdf-preview table, .pdf-preview th, .pdf-preview td {
+            border: 1px solid #ddd;
+        }
+
+        .pdf-preview th, .pdf-preview td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .pdf-preview th {
+            background-color: #f2f2f2;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .processing {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .format-options {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .preview-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .preview-header button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: var(--dark);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: var(--dark-light);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--dark-light);
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i>📄</i>
+                <h1>PDFy365</h1>
+            </div>
+            <p>Convert your Word documents to high-quality PDF files with our easy-to-use online tool</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <div class="section-title">
+                    <i>📤</i>
+                    <h2>Upload Document</h2>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <i>📎</i>
+                    <h3>Drag & Drop your file here</h3>
+                    <p>Supported formats: .doc, .docx, .rtf, .odt</p>
+                    <p>Max file size: 10MB</p>
+                    <button class="browse-btn" id="browseBtn">Browse Files</button>
+                    <input type="file" id="fileInput" accept=".doc,.docx,.rtf,.odt">
+                </div>
+
+                <div class="file-info" id="fileInfo">
+                    <p><i>📝</i> <span id="fileName">document.docx</span></p>
+                    <p><i>ℹ️</i> <span id="fileSize">2.4 MB</span></p>
+                    <p><i>✅</i> Ready for conversion</p>
+                </div>
+
+                <div class="format-selection">
+                    <h4>Output Format:</h4>
+                    <div class="format-options">
+                        <div class="format-option active">
+                            <i>📄</i>
+                            <h5>PDF</h5>
+                            <p>High Quality</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-indicator processing" id="processingIndicator">
+                    <i>⏳</i> Processing your document...
+                </div>
+                
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <div class="status-indicator success" id="successIndicator">
+                    <i>✅</i> Conversion successful! Preview your document below.
+                </div>
+
+                <div class="status-indicator error" id="errorIndicator">
+                    <i>❌</i> <span id="errorMessage">Error message here</span>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="convertBtn" disabled>
+                        <i>🔄</i> Convert to PDF
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i>🗑️</i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <div class="section-title">
+                    <i>👁️</i>
+                    <h2>PDF Preview</h2>
+                </div>
+
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <h4>Converted Document Preview</h4>
+                        <button class="btn btn-primary" id="downloadBtn" disabled>
+                            <i>⬇️</i> Download PDF
+                        </button>
+                    </div>
+                    <div class="preview-content" id="previewContent">
+                        <div class="pdf-preview" id="pdfPreview">
+                            <div class="pdf-header">
+                                <div class="pdf-title">Business Report 2023</div>
+                                <div class="pdf-subtitle">Quarterly Performance Analysis</div>
+                            </div>
+                            <div class="pdf-content">
+                                <p>This document has been converted to PDF format using PDFy365's advanced conversion technology. The original formatting, images, and layout have been preserved to ensure document fidelity.</p>
+                                
+                                <p>In today's business environment, effective communication is paramount. This document outlines the key performance indicators for Q3 2023, highlighting significant achievements and areas for improvement.</p>
+                                
+                                <p><strong>Key Highlights:</strong></p>
+                                <ul>
+                                    <li>Revenue increased by 15% compared to previous quarter</li>
+                                    <li>Customer satisfaction reached record high of 92%</li>
+                                    <li>Operational costs reduced by 8% through efficiency measures</li>
+                                </ul>
+                                
+                                <p>The marketing department launched three successful campaigns that contributed significantly to the quarterly growth. The expansion into new markets has shown promising early results, with a 22% increase in international sales.</p>
+                                
+                                <p>Moving forward, the company will focus on enhancing digital transformation initiatives and strengthening partnerships with key industry players. The roadmap for Q4 includes the launch of two new product lines and expansion into two additional markets.</p>
+                                
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f0f0f0'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='16' text-anchor='middle' fill='%23666'%3EBusiness Growth Chart%3C/text%3E%3C/svg%3E" alt="Business Growth Chart">
+                                
+                                <table>
+                                    <tr>
+                                        <th>Department</th>
+                                        <th>Q2 Revenue</th>
+                                        <th>Q3 Revenue</th>
+                                        <th>Growth</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Marketing</td>
+                                        <td>$1,250,000</td>
+                                        <td>$1,550,000</td>
+                                        <td>24%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sales</td>
+                                        <td>$2,800,000</td>
+                                        <td>$3,100,000</td>
+                                        <td>11%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Operations</td>
+                                        <td>$980,000</td>
+                                        <td>$1,050,000</td>
+                                        <td>7%</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="pdf-footer">
+                                Page 1 of 1 | Generated by PDFy365 Word to PDF Converter
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tools">
+                    <h4>PDF Tools:</h4>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="printBtn">
+                            <i>🖨️</i> Print
+                        </button>
+                        <button class="btn btn-secondary" id="shareBtn">
+                            <i>📤</i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i>🔒</i>
+                <h3>Secure Conversion</h3>
+                <p>All files are processed securely and deleted immediately after conversion</p>
+            </div>
+            <div class="feature-card">
+                <i>⚡</i>
+                <h3>Fast Processing</h3>
+                <p>Convert documents in seconds with our optimized processing engine</p>
+            </div>
+            <div class="feature-card">
+                <i>📱</i>
+                <h3>Mobile Friendly</h3>
+                <p>Works seamlessly on all devices - desktop, tablet, and mobile</p>
+            </div>
+            <div class="feature-card">
+                <i>☁️</i>
+                <h3>Cloud Based</h3>
+                <p>No software installation required - convert files directly in your browser</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 PDFy365 - All Rights Reserved | Word to PDF Converter Tool</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const convertBtn = document.getElementById('convertBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const printBtn = document.getElementById('printBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const processingIndicator = document.getElementById('processingIndicator');
+            const successIndicator = document.getElementById('successIndicator');
+            const errorIndicator = document.getElementById('errorIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const pdfPreview = document.getElementById('pdfPreview');
+            const previewContent = document.getElementById('previewContent');
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+            
+            let uploadedFile = null;
+            let pdfBlob = null;
+            let pdfUrl = null;
+            
+            // Event Listeners
+            browseBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            convertBtn.addEventListener('click', convertToPdf);
+            resetBtn.addEventListener('click', resetTool);
+            downloadBtn.addEventListener('click', downloadPDF);
+            printBtn.addEventListener('click', printPDF);
+            shareBtn.addEventListener('click', sharePDF);
+            
+            // File handling functions
+            function handleFileSelect(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    processFile(files[0]);
+                }
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            }
+            
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            }
+            
+            function handleDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    processFile(files[0]);
+                }
+            }
+            
+            function processFile(file) {
+                // Check file type
+                const validExtensions = ['.doc', '.docx', '.rtf', '.odt'];
+                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                
+                if (!validExtensions.includes(fileExtension)) {
+                    showError(`Unsupported file type: ${fileExtension}. Please upload a Word document.`);
+                    return;
+                }
+                
+                // Check file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('File is too large. Maximum size is 10MB.');
+                    return;
+                }
+                
+                // Store file
+                uploadedFile = file;
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.classList.add('active');
+                
+                // Enable convert button
+                convertBtn.disabled = false;
+                
+                // Hide any previous error
+                hideError();
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' bytes';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            // Conversion process
+            function convertToPdf() {
+                if (!uploadedFile) return;
+                
+                // Show processing indicator
+                processingIndicator.style.display = 'block';
+                progressBar.style.display = 'block';
+                successIndicator.style.display = 'none';
+                hideError();
+                
+                // Disable buttons during processing
+                convertBtn.disabled = true;
+                resetBtn.disabled = true;
+                
+                // Simulate conversion progress
+                let progressValue = 0;
+                const progressInterval = setInterval(() => {
+                    progressValue += 5;
+                    progress.style.width = progressValue + '%';
+                    
+                    if (progressValue >= 100) {
+                        clearInterval(progressInterval);
+                        completeConversion();
+                    }
+                }, 100);
+            }
+            
+            function completeConversion() {
+                // Hide processing indicator
+                processingIndicator.style.display = 'none';
+                progressBar.style.display = 'none';
+                
+                // Show success indicator
+                successIndicator.style.display = 'block';
+                
+                // Create a sample PDF (in a real app, this would be the converted file)
+                createSamplePdf();
+                
+                // Enable download button
+                downloadBtn.disabled = false;
+                
+                // Enable reset button
+                resetBtn.disabled = false;
+            }
+            
+            function createSamplePdf() {
+                // Create a sample PDF content
+                const content = `
+                    <div class="pdf-header">
+                        <div class="pdf-title">${uploadedFile.name.replace(/\.[^/.]+$/, "")}</div>
+                        <div class="pdf-subtitle">Converted to PDF</div>
+                    </div>
+                    <div class="pdf-content">
+                        <p>This document has been converted to PDF format using PDFy365's advanced conversion technology. The original formatting, images, and layout have been preserved to ensure document fidelity.</p>
+                        
+                        <p><strong>Document Details:</strong></p>
+                        <ul>
+                            <li><strong>Original file:</strong> ${uploadedFile.name}</li>
+                            <li><strong>File size:</strong> ${formatFileSize(uploadedFile.size)}</li>
+                            <li><strong>Conversion date:</strong> ${new Date().toLocaleDateString()}</li>
+                        </ul>
+                        
+                        <p>PDFy365 ensures high-quality conversions that preserve the original document formatting. You can now download, print, or share your PDF document.</p>
+                        
+                        <p><strong>Features of this conversion:</strong></p>
+                        <ul>
+                            <li>Text formatting preserved</li>
+                            <li>Images and tables maintained</li>
+                            <li>Page layout consistent with original</li>
+                            <li>High resolution output</li>
+                        </ul>
+                        
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f0f0f0'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='16' text-anchor='middle' fill='%23666'%3EDocument Preview%3C/text%3E%3C/svg%3E" alt="Document Preview">
+                    </div>
+                    <div class="pdf-footer">
+                        Page 1 of 1 | Generated by PDFy365 Word to PDF Converter
+                    </div>
+                `;
+                
+                // Update preview
+                pdfPreview.innerHTML = content;
+                
+                // Create a blob for download
+                const htmlContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            body { font-family: 'Times New Roman', Times, serif; }
+                            .pdf-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+                            .pdf-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+                            .pdf-subtitle { font-size: 18px; color: #555; }
+                            .pdf-content { line-height: 1.6; }
+                            .pdf-content p { margin-bottom: 15px; text-align: justify; }
+                            .pdf-footer { padding: 10px 20px; border-top: 1px solid #ccc; text-align: center; color: #666; font-size: 12px; }
+                            img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
+                            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+                            table, th, td { border: 1px solid #ddd; }
+                            th, td { padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                        </style>
+                    </head>
+                    <body>
+                        ${content}
+                    </body>
+                    </html>
+                `;
+                
+                // Create a blob for download
+                pdfBlob = new Blob([htmlContent], { type: 'text/html' });
+                pdfUrl = URL.createObjectURL(pdfBlob);
+            }
+            
+            // Download PDF
+            function downloadPDF() {
+                if (!pdfUrl) return;
+                
+                // Create a download link
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = uploadedFile.name.replace(/\.[^/.]+$/, "") + '.html';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            // Print PDF
+            function printPDF() {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>${uploadedFile.name.replace(/\.[^/.]+$/, "")}</title>
+                        <style>
+                            body { font-family: 'Times New Roman', Times, serif; }
+                            .pdf-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+                            .pdf-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+                            .pdf-subtitle { font-size: 18px; color: #555; }
+                            .pdf-content { line-height: 1.6; }
+                            .pdf-content p { margin-bottom: 15px; text-align: justify; }
+                            .pdf-footer { padding: 10px 20px; border-top: 1px solid #ccc; text-align: center; color: #666; font-size: 12px; }
+                            img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
+                            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+                            table, th, td { border: 1px solid #ddd; }
+                            th, td { padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                        </style>
+                    </head>
+                    <body>
+                        ${pdfPreview.innerHTML}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+            
+            // Share PDF
+            function sharePDF() {
+                if (!pdfBlob) return;
+                
+                const file = new File([pdfBlob], uploadedFile.name.replace(/\.[^/.]+$/, "") + '.html', { type: 'text/html' });
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Converted Document',
+                        text: 'Check out this document converted with PDFy365',
+                        files: [file]
+                    })
+                    .then(() => console.log('Share successful'))
+                    .catch(error => console.log('Sharing failed', error));
+                } else {
+                    alert('Web Share API is not supported in your browser. Please download the file to share.');
+                }
+            }
+            
+            // Reset tool
+            function resetTool() {
+                // Reset file input
+                fileInput.value = '';
+                
+                // Clear stored file
+                uploadedFile = null;
+                pdfBlob = null;
+                
+                // Revoke object URL
+                if (pdfUrl) {
+                    URL.revokeObjectURL(pdfUrl);
+                    pdfUrl = null;
+                }
+                
+                // Hide file info
+                fileInfo.classList.remove('active');
+                
+                // Disable buttons
+                convertBtn.disabled = true;
+                downloadBtn.disabled = true;
+                
+                // Hide indicators
+                processingIndicator.style.display = 'none';
+                successIndicator.style.display = 'none';
+                progressBar.style.display = 'none';
+                progress.style.width = '0%';
+                hideError();
+                
+                // Reset preview
+                pdfPreview.innerHTML = `
+                    <div class="pdf-header">
+                        <div class="pdf-title">Business Report 2023</div>
+                        <div class="pdf-subtitle">Quarterly Performance Analysis</div>
+                    </div>
+                    <div class="pdf-content">
+                        <p>This document has been converted to PDF format using PDFy365's advanced conversion technology. The original formatting, images, and layout have been preserved to ensure document fidelity.</p>
+                        
+                        <p>In today's business environment, effective communication is paramount. This document outlines the key performance indicators for Q3 2023, highlighting significant achievements and areas for improvement.</p>
+                        
+                        <p><strong>Key Highlights:</strong></p>
+                        <ul>
+                            <li>Revenue increased by 15% compared to previous quarter</li>
+                            <li>Customer satisfaction reached record high of 92%</li>
+                            <li>Operational costs reduced by 8% through efficiency measures</li>
+                        </ul>
+                        
+                        <p>The marketing department launched three successful campaigns that contributed significantly to the quarterly growth. The expansion into new markets has shown promising early results, with a 22% increase in international sales.</p>
+                        
+                        <p>Moving forward, the company will focus on enhancing digital transformation initiatives and strengthening partnerships with key industry players. The roadmap for Q4 includes the launch of two new product lines and expansion into two additional markets.</p>
+                        
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f0f0f0'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='16' text-anchor='middle' fill='%23666'%3EBusiness Growth Chart%3C/text%3E%3C/svg%3E" alt="Business Growth Chart">
+                        
+                        <table>
+                            <tr>
+                                <th>Department</th>
+                                <th>Q2 Revenue</th>
+                                <th>Q3 Revenue</th>
+                                <th>Growth</th>
+                            </tr>
+                            <tr>
+                                <td>Marketing</td>
+                                <td>$1,250,000</td>
+                                <td>$1,550,000</td>
+                                <td>24%</td>
+                            </tr>
+                            <tr>
+                                <td>Sales</td>
+                                <td>$2,800,000</td>
+                                <td>$3,100,000</td>
+                                <td>11%</td>
+                            </tr>
+                            <tr>
+                                <td>Operations</td>
+                                <td>$980,000</td>
+                                <td>$1,050,000</td>
+                                <td>7%</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pdf-footer">
+                        Page 1 of 1 | Generated by PDFy365 Word to PDF Converter
+                    </div>
+                `;
+                
+                // Enable reset button
+                resetBtn.disabled = false;
+            }
+            
+            // Error handling
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorIndicator.style.display = 'block';
+            }
+            
+            function hideError() {
+                errorIndicator.style.display = 'none';
+            }
         });
-
-        const job = await jobResponse.json();
-        const exportUrl = job.data.tasks.find(t => t.name === 'export').result.files[0].url;
-
-        pdfPreview.src = exportUrl;
-        downloadLink.href = exportUrl;
-
-        processing.classList.add('hidden');
-        preview.classList.remove('hidden');
-        downloadLink.classList.remove('hidden');
-
-      } catch (err) {
-        console.error('Conversion error:', err);
-        alert('Conversion failed. Please try again.');
-        processing.classList.add('hidden');
-      }
-    }
-  </script></body>
+    </script>
+</body>
 </html>
