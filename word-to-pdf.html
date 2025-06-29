@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDFy365 - Word to PDF Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -529,7 +529,7 @@
     <div class="container">
         <header>
             <div class="logo">
-                <i>📄</i>
+                <i class="fas fa-file-pdf"></i>
                 <h1>PDFy365</h1>
             </div>
             <p>Convert your Word documents to high-quality PDF files with our easy-to-use online tool</p>
@@ -539,12 +539,12 @@
             <!-- Upload Section -->
             <div class="upload-section">
                 <div class="section-title">
-                    <i>📤</i>
+                    <i class="fas fa-file-upload"></i>
                     <h2>Upload Document</h2>
                 </div>
 
                 <div class="upload-area" id="uploadArea">
-                    <i>📎</i>
+                    <i class="fas fa-cloud-upload-alt"></i>
                     <h3>Drag & Drop your file here</h3>
                     <p>Supported formats: .doc, .docx, .rtf, .odt</p>
                     <p>Max file size: 10MB</p>
@@ -553,16 +553,16 @@
                 </div>
 
                 <div class="file-info" id="fileInfo">
-                    <p><i>📝</i> <span id="fileName">document.docx</span></p>
-                    <p><i>ℹ️</i> <span id="fileSize">2.4 MB</span></p>
-                    <p><i>✅</i> Ready for conversion</p>
+                    <p><i class="fas fa-file-word"></i> <span id="fileName">document.docx</span></p>
+                    <p><i class="fas fa-info-circle"></i> <span id="fileSize">2.4 MB</span></p>
+                    <p><i class="fas fa-check-circle"></i> Ready for conversion</p>
                 </div>
 
                 <div class="format-selection">
                     <h4>Output Format:</h4>
                     <div class="format-options">
                         <div class="format-option active">
-                            <i>📄</i>
+                            <i class="fas fa-file-pdf"></i>
                             <h5>PDF</h5>
                             <p>High Quality</p>
                         </div>
@@ -570,7 +570,7 @@
                 </div>
 
                 <div class="status-indicator processing" id="processingIndicator">
-                    <i>⏳</i> Processing your document...
+                    <i class="fas fa-spinner fa-spin"></i> Processing your document...
                 </div>
                 
                 <div class="progress-bar" id="progressBar">
@@ -578,19 +578,19 @@
                 </div>
 
                 <div class="status-indicator success" id="successIndicator">
-                    <i>✅</i> Conversion successful! Preview your document below.
+                    <i class="fas fa-check-circle"></i> Conversion successful! Preview your document below.
                 </div>
 
                 <div class="status-indicator error" id="errorIndicator">
-                    <i>❌</i> <span id="errorMessage">Error message here</span>
+                    <i class="fas fa-exclamation-circle"></i> <span id="errorMessage">Error message here</span>
                 </div>
 
                 <div class="action-buttons">
                     <button class="btn btn-primary" id="convertBtn" disabled>
-                        <i>🔄</i> Convert to PDF
+                        <i class="fas fa-sync-alt"></i> Convert to PDF
                     </button>
                     <button class="btn btn-secondary" id="resetBtn">
-                        <i>🗑️</i> Clear All
+                        <i class="fas fa-trash-alt"></i> Clear All
                     </button>
                 </div>
             </div>
@@ -598,7 +598,7 @@
             <!-- Preview Section -->
             <div class="preview-section">
                 <div class="section-title">
-                    <i>👁️</i>
+                    <i class="fas fa-eye"></i>
                     <h2>PDF Preview</h2>
                 </div>
 
@@ -606,7 +606,7 @@
                     <div class="preview-header">
                         <h4>Converted Document Preview</h4>
                         <button class="btn btn-primary" id="downloadBtn" disabled>
-                            <i>⬇️</i> Download PDF
+                            <i class="fas fa-download"></i> Download PDF
                         </button>
                     </div>
                     <div class="preview-content" id="previewContent">
@@ -653,446 +653,4 @@
                                         <td>11%</td>
                                     </tr>
                                     <tr>
-                                        <td>Operations</td>
-                                        <td>$980,000</td>
-                                        <td>$1,050,000</td>
-                                        <td>7%</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="pdf-footer">
-                                Page 1 of 1 | Generated by PDFy365 Word to PDF Converter
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tools">
-                    <h4>PDF Tools:</h4>
-                    <div class="action-buttons">
-                        <button class="btn btn-secondary" id="printBtn">
-                            <i>🖨️</i> Print
-                        </button>
-                        <button class="btn btn-secondary" id="shareBtn">
-                            <i>📤</i> Share
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="features">
-            <div class="feature-card">
-                <i>🔒</i>
-                <h3>Secure Conversion</h3>
-                <p>All files are processed securely and deleted immediately after conversion</p>
-            </div>
-            <div class="feature-card">
-                <i>⚡</i>
-                <h3>Fast Processing</h3>
-                <p>Convert documents in seconds with our optimized processing engine</p>
-            </div>
-            <div class="feature-card">
-                <i>📱</i>
-                <h3>Mobile Friendly</h3>
-                <p>Works seamlessly on all devices - desktop, tablet, and mobile</p>
-            </div>
-            <div class="feature-card">
-                <i>☁️</i>
-                <h3>Cloud Based</h3>
-                <p>No software installation required - convert files directly in your browser</p>
-            </div>
-        </div>
-        
-        <footer>
-            <p>© 2023 PDFy365 - All Rights Reserved | Word to PDF Converter Tool</p>
-        </footer>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
-            const browseBtn = document.getElementById('browseBtn');
-            const fileInfo = document.getElementById('fileInfo');
-            const fileName = document.getElementById('fileName');
-            const fileSize = document.getElementById('fileSize');
-            const convertBtn = document.getElementById('convertBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const printBtn = document.getElementById('printBtn');
-            const shareBtn = document.getElementById('shareBtn');
-            const processingIndicator = document.getElementById('processingIndicator');
-            const successIndicator = document.getElementById('successIndicator');
-            const errorIndicator = document.getElementById('errorIndicator');
-            const errorMessage = document.getElementById('errorMessage');
-            const pdfPreview = document.getElementById('pdfPreview');
-            const previewContent = document.getElementById('previewContent');
-            const progressBar = document.getElementById('progressBar');
-            const progress = document.getElementById('progress');
-            
-            let uploadedFile = null;
-            let pdfBlob = null;
-            let pdfUrl = null;
-            
-            // Event Listeners
-            browseBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', handleFileSelect);
-            uploadArea.addEventListener('dragover', handleDragOver);
-            uploadArea.addEventListener('dragleave', handleDragLeave);
-            uploadArea.addEventListener('drop', handleDrop);
-            convertBtn.addEventListener('click', convertToPdf);
-            resetBtn.addEventListener('click', resetTool);
-            downloadBtn.addEventListener('click', downloadPDF);
-            printBtn.addEventListener('click', printPDF);
-            shareBtn.addEventListener('click', sharePDF);
-            
-            // File handling functions
-            function handleFileSelect(e) {
-                const files = e.target.files;
-                if (files.length > 0) {
-                    processFile(files[0]);
-                }
-            }
-            
-            function handleDragOver(e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            }
-            
-            function handleDragLeave(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-            }
-            
-            function handleDrop(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    processFile(files[0]);
-                }
-            }
-            
-            function processFile(file) {
-                // Check file type
-                const validExtensions = ['.doc', '.docx', '.rtf', '.odt'];
-                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-                
-                if (!validExtensions.includes(fileExtension)) {
-                    showError(`Unsupported file type: ${fileExtension}. Please upload a Word document.`);
-                    return;
-                }
-                
-                // Check file size (max 10MB)
-                if (file.size > 10 * 1024 * 1024) {
-                    showError('File is too large. Maximum size is 10MB.');
-                    return;
-                }
-                
-                // Store file
-                uploadedFile = file;
-                
-                // Display file info
-                fileName.textContent = file.name;
-                fileSize.textContent = formatFileSize(file.size);
-                fileInfo.classList.add('active');
-                
-                // Enable convert button
-                convertBtn.disabled = false;
-                
-                // Hide any previous error
-                hideError();
-            }
-            
-            function formatFileSize(bytes) {
-                if (bytes < 1024) return bytes + ' bytes';
-                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-                else return (bytes / 1048576).toFixed(1) + ' MB';
-            }
-            
-            // Conversion process
-            function convertToPdf() {
-                if (!uploadedFile) return;
-                
-                // Show processing indicator
-                processingIndicator.style.display = 'block';
-                progressBar.style.display = 'block';
-                successIndicator.style.display = 'none';
-                hideError();
-                
-                // Disable buttons during processing
-                convertBtn.disabled = true;
-                resetBtn.disabled = true;
-                
-                // Simulate conversion progress
-                let progressValue = 0;
-                const progressInterval = setInterval(() => {
-                    progressValue += 5;
-                    progress.style.width = progressValue + '%';
-                    
-                    if (progressValue >= 100) {
-                        clearInterval(progressInterval);
-                        completeConversion();
-                    }
-                }, 100);
-            }
-            
-            function completeConversion() {
-                // Hide processing indicator
-                processingIndicator.style.display = 'none';
-                progressBar.style.display = 'none';
-                
-                // Show success indicator
-                successIndicator.style.display = 'block';
-                
-                // Create a sample PDF (in a real app, this would be the converted file)
-                createSamplePdf();
-                
-                // Enable download button
-                downloadBtn.disabled = false;
-                
-                // Enable reset button
-                resetBtn.disabled = false;
-            }
-            
-            function createSamplePdf() {
-                // Create a sample PDF content
-                const content = `
-                    <div class="pdf-header">
-                        <div class="pdf-title">${uploadedFile.name.replace(/\.[^/.]+$/, "")}</div>
-                        <div class="pdf-subtitle">Converted to PDF</div>
-                    </div>
-                    <div class="pdf-content">
-                        <p>This document has been converted to PDF format using PDFy365's advanced conversion technology. The original formatting, images, and layout have been preserved to ensure document fidelity.</p>
-                        
-                        <p><strong>Document Details:</strong></p>
-                        <ul>
-                            <li><strong>Original file:</strong> ${uploadedFile.name}</li>
-                            <li><strong>File size:</strong> ${formatFileSize(uploadedFile.size)}</li>
-                            <li><strong>Conversion date:</strong> ${new Date().toLocaleDateString()}</li>
-                        </ul>
-                        
-                        <p>PDFy365 ensures high-quality conversions that preserve the original document formatting. You can now download, print, or share your PDF document.</p>
-                        
-                        <p><strong>Features of this conversion:</strong></p>
-                        <ul>
-                            <li>Text formatting preserved</li>
-                            <li>Images and tables maintained</li>
-                            <li>Page layout consistent with original</li>
-                            <li>High resolution output</li>
-                        </ul>
-                        
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f0f0f0'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='16' text-anchor='middle' fill='%23666'%3EDocument Preview%3C/text%3E%3C/svg%3E" alt="Document Preview">
-                    </div>
-                    <div class="pdf-footer">
-                        Page 1 of 1 | Generated by PDFy365 Word to PDF Converter
-                    </div>
-                `;
-                
-                // Update preview
-                pdfPreview.innerHTML = content;
-                
-                // Create a blob for download
-                const htmlContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <style>
-                            body { font-family: 'Times New Roman', Times, serif; }
-                            .pdf-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-                            .pdf-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                            .pdf-subtitle { font-size: 18px; color: #555; }
-                            .pdf-content { line-height: 1.6; }
-                            .pdf-content p { margin-bottom: 15px; text-align: justify; }
-                            .pdf-footer { padding: 10px 20px; border-top: 1px solid #ccc; text-align: center; color: #666; font-size: 12px; }
-                            img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
-                            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-                            table, th, td { border: 1px solid #ddd; }
-                            th, td { padding: 8px; text-align: left; }
-                            th { background-color: #f2f2f2; }
-                        </style>
-                    </head>
-                    <body>
-                        ${content}
-                    </body>
-                    </html>
-                `;
-                
-                // Create a blob for download
-                pdfBlob = new Blob([htmlContent], { type: 'text/html' });
-                pdfUrl = URL.createObjectURL(pdfBlob);
-            }
-            
-            // Download PDF
-            function downloadPDF() {
-                if (!pdfUrl) return;
-                
-                // Create a download link
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = uploadedFile.name.replace(/\.[^/.]+$/, "") + '.html';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-            
-            // Print PDF
-            function printPDF() {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>${uploadedFile.name.replace(/\.[^/.]+$/, "")}</title>
-                        <style>
-                            body { font-family: 'Times New Roman', Times, serif; }
-                            .pdf-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-                            .pdf-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                            .pdf-subtitle { font-size: 18px; color: #555; }
-                            .pdf-content { line-height: 1.6; }
-                            .pdf-content p { margin-bottom: 15px; text-align: justify; }
-                            .pdf-footer { padding: 10px 20px; border-top: 1px solid #ccc; text-align: center; color: #666; font-size: 12px; }
-                            img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
-                            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-                            table, th, td { border: 1px solid #ddd; }
-                            th, td { padding: 8px; text-align: left; }
-                            th { background-color: #f2f2f2; }
-                        </style>
-                    </head>
-                    <body>
-                        ${pdfPreview.innerHTML}
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                            }
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-            }
-            
-            // Share PDF
-            function sharePDF() {
-                if (!pdfBlob) return;
-                
-                const file = new File([pdfBlob], uploadedFile.name.replace(/\.[^/.]+$/, "") + '.html', { type: 'text/html' });
-                
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Converted Document',
-                        text: 'Check out this document converted with PDFy365',
-                        files: [file]
-                    })
-                    .then(() => console.log('Share successful'))
-                    .catch(error => console.log('Sharing failed', error));
-                } else {
-                    alert('Web Share API is not supported in your browser. Please download the file to share.');
-                }
-            }
-            
-            // Reset tool
-            function resetTool() {
-                // Reset file input
-                fileInput.value = '';
-                
-                // Clear stored file
-                uploadedFile = null;
-                pdfBlob = null;
-                
-                // Revoke object URL
-                if (pdfUrl) {
-                    URL.revokeObjectURL(pdfUrl);
-                    pdfUrl = null;
-                }
-                
-                // Hide file info
-                fileInfo.classList.remove('active');
-                
-                // Disable buttons
-                convertBtn.disabled = true;
-                downloadBtn.disabled = true;
-                
-                // Hide indicators
-                processingIndicator.style.display = 'none';
-                successIndicator.style.display = 'none';
-                progressBar.style.display = 'none';
-                progress.style.width = '0%';
-                hideError();
-                
-                // Reset preview
-                pdfPreview.innerHTML = `
-                    <div class="pdf-header">
-                        <div class="pdf-title">Business Report 2023</div>
-                        <div class="pdf-subtitle">Quarterly Performance Analysis</div>
-                    </div>
-                    <div class="pdf-content">
-                        <p>This document has been converted to PDF format using PDFy365's advanced conversion technology. The original formatting, images, and layout have been preserved to ensure document fidelity.</p>
-                        
-                        <p>In today's business environment, effective communication is paramount. This document outlines the key performance indicators for Q3 2023, highlighting significant achievements and areas for improvement.</p>
-                        
-                        <p><strong>Key Highlights:</strong></p>
-                        <ul>
-                            <li>Revenue increased by 15% compared to previous quarter</li>
-                            <li>Customer satisfaction reached record high of 92%</li>
-                            <li>Operational costs reduced by 8% through efficiency measures</li>
-                        </ul>
-                        
-                        <p>The marketing department launched three successful campaigns that contributed significantly to the quarterly growth. The expansion into new markets has shown promising early results, with a 22% increase in international sales.</p>
-                        
-                        <p>Moving forward, the company will focus on enhancing digital transformation initiatives and strengthening partnerships with key industry players. The roadmap for Q4 includes the launch of two new product lines and expansion into two additional markets.</p>
-                        
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f0f0f0'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='16' text-anchor='middle' fill='%23666'%3EBusiness Growth Chart%3C/text%3E%3C/svg%3E" alt="Business Growth Chart">
-                        
-                        <table>
-                            <tr>
-                                <th>Department</th>
-                                <th>Q2 Revenue</th>
-                                <th>Q3 Revenue</th>
-                                <th>Growth</th>
-                            </tr>
-                            <tr>
-                                <td>Marketing</td>
-                                <td>$1,250,000</td>
-                                <td>$1,550,000</td>
-                                <td>24%</td>
-                            </tr>
-                            <tr>
-                                <td>Sales</td>
-                                <td>$2,800,000</td>
-                                <td>$3,100,000</td>
-                                <td>11%</td>
-                            </tr>
-                            <tr>
-                                <td>Operations</td>
-                                <td>$980,000</td>
-                                <td>$1,050,000</td>
-                                <td>7%</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="pdf-footer">
-                        Page 1 of 1 | Generated by PDFy365 Word to PDF Converter
-                    </div>
-                `;
-                
-                // Enable reset button
-                resetBtn.disabled = false;
-            }
-            
-            // Error handling
-            function showError(message) {
-                errorMessage.textContent = message;
-                errorIndicator.style.display = 'block';
-            }
-            
-            function hideError() {
-                errorIndicator.style.display = 'none';
-            }
-        });
-    </script>
-</body>
-</html>
+                                        
